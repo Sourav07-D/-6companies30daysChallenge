@@ -1,0 +1,26 @@
+class Solution {
+    public List<String> findHighAccessEmployees(List<List<String>> access_times) {
+        int n = access_times.size();
+        Map<String, List<Integer>> map = new HashMap<>();
+        for(List<String> time : access_times){
+            String emp = time.get(0);
+            int times = Integer.valueOf(time.get(1));
+            map.computeIfAbsent(emp, v->new ArrayList<>()).add(times);
+        }
+        List<String> defaulter = new ArrayList<>();
+        for(String emp : map.keySet()){
+            List<Integer> times = map.get(emp);
+            if(times.size() <= 2)
+                continue;
+            Collections.sort(times);
+            int len = times.size();
+            for(int i=0; i<len-2; i++){
+                if(times.get(i)+ 100 > times.get(i+1) && times.get(i)+ 100 > times.get(i+2)){
+                    defaulter.add(emp);
+                    break;
+                }
+            }
+        }
+        return defaulter;
+    }
+}
