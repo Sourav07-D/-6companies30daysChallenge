@@ -1,0 +1,37 @@
+// static int[] map = new int[31]; is the preprocessed factorialized result
+    public int numberOfGoodSubsets(int[] nums) {
+        int[] cnt = new int[31];
+        int one = 0, n = 0;
+        for (int i : nums) {
+            if (-1 != map[i]) {
+                if (0 == cnt[i]++) n++;
+            } else if (1 == i) one++;
+        }
+        int[] keys = new int[n];
+        for (int i = 1, j = 0; i <= 30; ++i) if (0 != cnt[i]) keys[j++] = i;
+        long res = 0;
+        for (int i = 1; i < 1 << n; ++i) {
+            long val = 1, mask = 0;
+            for (int j = 0; j < n; ++j) {
+                if (0 == ((i >> j) & 1)) continue;
+                if (0 != (mask & map[keys[j]])) {
+                    val = -1;
+                    break;
+                }
+                val = val * cnt[keys[j]] % mod;
+                mask |= map[keys[j]];
+            }
+            if (-1 != val) res = (res + val) % mod;
+        }
+        if (0 != one) res = res * pow(one) % mod;
+        return (int) res;
+    }
+    private long pow(int n) {
+        long res = 1, m = 2;
+        while (0 != n) {
+            if (1 == (n & 1)) res = (res * m) % mod;
+            m = m * m % mod;
+            n >>= 1;
+        }
+        return res;
+    }
